@@ -45,7 +45,7 @@ TEST_F(SystemsDataTypes, Internal_Linkage_in_Namespace)
     using namespace SystemProgrammingPractice::SystemTypes;
 
     // instance for this translation unit
-    my_struct.value_1 += 0;
+    my_struct.value_1 += 3;
 
     // increments the instance for the sys_prog.cpp translation unit.
     increment_variable();
