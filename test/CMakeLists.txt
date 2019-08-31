@@ -14,5 +14,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(catch2)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(test_lib main_test.cpp)
+add_executable(test_lib system_data_types_test.cpp)
 target_link_libraries(test_lib PUBLIC systems_lib gtest gtest_main Catch2::Catch2)
+#target_compile_options(test_lib  INTERFACE -std=c++17 -O3)
