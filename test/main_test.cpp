@@ -34,6 +34,39 @@ TEST_F(SystemsDataTypes, Struct_Byte_Granularity)
     ASSERT_EQ(sizeof(MyStruct), 10);
 }
 
+
+TEST_F(SystemsDataTypes, Struct_Alignment_Using_Padding)
+{
+    /**
+  * @desc By manually reordering the members of MyStruct we decrease alignment requirement
+  * and halve the size of the struct. The compiler adds padding to meet alignment as such:
+  * struct MyStruct {
+  *     char byte_1;
+  *     char pad[7]
+  *     int *byte_8;
+  *     short byte_2;
+  *     char pad[6]
+  *};
+*/
+
+    struct MyStruct {
+        char byte_1;
+        int *byte_8;
+        short byte_2;
+    };
+
+    ASSERT_EQ(24, sizeof(MyStruct));
+
+    struct MyStructReorder{
+        int *byte_8;
+        char byte_1;
+        short byte_2;
+    };
+
+    ASSERT_EQ(16, sizeof(MyStructReorder));
+}
+
+
 TEST_F(SystemsDataTypes, Internal_Linkage_in_Namespace)
 {
     /**
@@ -53,3 +86,4 @@ TEST_F(SystemsDataTypes, Internal_Linkage_in_Namespace)
 
     ASSERT_TRUE((my_struct.value_1 - return_pair.second) == 2);
 }
+
