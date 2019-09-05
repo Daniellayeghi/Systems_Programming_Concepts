@@ -74,6 +74,16 @@ TEST_F(SystemsDataTypes, Struct_Cache_Alignment) {
      * is also cache aligned. Using alignas we can enforce this.
     */
 
+    #if __GNUC__
+    #if __x86_64__
+    #define ENVIRONMENT64
+    #define LONGSIZE 16
+    #else
+    #define ENVIRONMENT32
+    #define LONGSIZE 8
+    #endif
+    #endif
+
     #pragma pack(push, 1)
     struct MyStruct {
         std::uint16_t value_1 = 0; //2 bytes
@@ -83,7 +93,7 @@ TEST_F(SystemsDataTypes, Struct_Cache_Alignment) {
 
 
     #pragma pack(push, 1)
-    struct alignas(16) MyStructCacheAligned {
+    struct alignas(LONGSIZE) MyStructCacheAligned {
         std::uint16_t value_1 = 0; //2 bytes
         std::uint64_t value_2 = 0; //8 bytes
     };
@@ -94,10 +104,10 @@ TEST_F(SystemsDataTypes, Struct_Cache_Alignment) {
     MyStructCacheAligned cache_aligned_instance;
 
     auto instance_address = reinterpret_cast<uintptr_t> (&instance);
-    auto nibble = instance_address % 16;
+    auto nibble = instance_address % LONGSIZE;
 
     auto cache_aligned_instance_address = reinterpret_cast<uintptr_t> (&cache_aligned_instance);
-    auto cache_aligned_nibble = cache_aligned_instance_address % 16;
+    auto cache_aligned_nibble = cache_aligned_instance_address % LONGSIZE;
 
     ASSERT_TRUE(nibble != 0);
     ASSERT_TRUE(cache_aligned_nibble == 0);
